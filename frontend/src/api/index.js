@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-cconst BASE_URL = 'https://blog-app-backend-wvm2.onrender.com/api';
+const BASE_URL = 'https://blog-app-backend-wvm2.onrender.com/api';
 
 const api = axios.create({ baseURL: BASE_URL });
 
