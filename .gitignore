@@ -1,0 +1,16 @@
+# Java
+target/
+*.class
+*.jar
+
+# Node
+node_modules/
+build/
+
+# Environment
+application-local.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
