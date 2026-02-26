@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import './PostCard.css';
 
 export default function PostCard({ post, onDelete, showActions = false }) {
+const { user } = useAuth();
+  const canEdit = user && (user.role === 'ADMIN' || user.username === post.author?.username);
   const dateStr = post.createdAt
     ? format(new Date(post.createdAt), 'MMM d, yyyy')
     : '';
@@ -44,15 +46,15 @@ export default function PostCard({ post, onDelete, showActions = false }) {
             <span className="view-count" title="Views">
               ◎ {post.viewCount || 0}
             </span>
-            {showActions && (
-              <div className="post-card-actions">
-                <span className={`badge badge-${post.status?.toLowerCase()}`}>{post.status}</span>
-                <Link to={`/editor/${post.id}`} className="btn btn-outline btn-sm">Edit</Link>
-                {onDelete && (
-                  <button onClick={() => onDelete(post.id)} className="btn btn-danger btn-sm">Delete</button>
-                )}
-              </div>
-            )}
+            {showActions && (canEdit) && (
+  <div className="post-card-actions">
+    <span className={`badge badge-${post.status?.toLowerCase()}`}>{post.status}</span>
+    <Link to={`/editor/${post.id}`} className="btn btn-outline btn-sm">Edit</Link>
+    {onDelete && (
+      <button onClick={() => onDelete(post.id)} className="btn btn-danger btn-sm">Delete</button>
+    )}
+  </div>
+)}
           </div>
         </div>
       </div>
