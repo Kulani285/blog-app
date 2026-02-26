@@ -44,6 +44,12 @@ public class PostService {
     public PostDTO.Response getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User requester = userRepository.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    if (!post.getAuthor().getUsername().equals(username) && requester.getRole() != User.Role.ADMIN) {
+        throw new RuntimeException("You are not allowed to edit this post");
+    }
         post.setViewCount(post.getViewCount() + 1);
         postRepository.save(post);
         return toResponse(post);
@@ -88,9 +94,17 @@ public class PostService {
         return toResponse(postRepository.save(post));
     }
 
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+   public void deletePost(Long id) {
+    Post post = postRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Post not found"));
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User requester = userRepository.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    if (!post.getAuthor().getUsername().equals(username) && requester.getRole() != User.Role.ADMIN) {
+        throw new RuntimeException("You are not allowed to delete this post");
     }
+    postRepository.deleteById(id);
+}
 
     public Page<PostDTO.Summary> searchPosts(String query, Pageable pageable) {
         return postRepository.search(query, pageable).map(this::toSummary);
