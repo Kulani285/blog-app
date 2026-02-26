@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useAuth } from '../hooks/useAuth';
 import './PostCard.css';
 
 export default function PostCard({ post, onDelete, showActions = false }) {
